@@ -57,20 +57,29 @@ This is a suspicious pattern that merits investigation. The available dataset do
 
 Validation Evidence
 
-The investigation logic was validated using synthetic sign-in event data stored in "evidence/signin-events.csv".
+The Python prototype validation tests (T01–T06) passed using synthetic sign-in event data.
 
-The Python prototype validation tests (T01–T06) passed. These tests assess the expected behaviour of the investigation logic, including event handling and deduplication.
+Validation screenshot: "View Python validation results" (PATH/TO/SCREENSHOT.png)
 
-Evidence:
-(evidence/python-validation-results.jpg)
+Validation Scope
 
-Validation Scope and Limitations
+- Synthetic training data used.
+- Documentation-only IP addresses used.
+- Python prototype tests passed.
+- Live Microsoft Sentinel and KQL execution not yet performed.
 
-- Dataset: Synthetic training data.
-- IP addresses: Documentation-only addresses.
-- Python prototype tests: Passed.
-- Live Microsoft Sentinel execution: Not performed.
-- Live KQL query validation: Not performed.
+These results validate the Python prototype only; they do not represent testing in a live Sentinel environment.Validation Evidence
+
+The Python prototype validation tests (T01–T06) passed using synthetic sign-in event data.
+
+Validation screenshot: "View Python validation results" (evidence/python-validation-results.jpg)
+
+Validation Scope
+
+- Synthetic training data used.
+- Documentation-only IP addresses used.
+- Python prototype tests passed.
+- Live Microsoft Sentinel and KQL execution not yet performed.
 
 The results demonstrate the expected behaviour of the Python prototype within the test environment. They do not constitute validation against a live Microsoft Sentinel workspace.
 
