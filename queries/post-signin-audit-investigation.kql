@@ -1,0 +1,17 @@
+
+let InvestigationStart = datetime(2026-10-14 08:18:00);
+let InvestigationEnd = datetime(2026-10-14 09:18:00);
+let InvestigatedUser = "alex.morgan@example.test";
+AuditLogs
+| where TimeGenerated between (InvestigationStart .. InvestigationEnd)
+| where tostring(InitiatedBy) has InvestigatedUser
+    or tostring(TargetResources) has InvestigatedUser
+| project
+    TimeGenerated,
+    OperationName,
+    Category,
+    Result,
+    InitiatedBy,
+    TargetResources,
+    CorrelationId
+| order by TimeGenerated asc
