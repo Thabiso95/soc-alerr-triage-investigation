@@ -55,20 +55,7 @@ The synthetic records contain five failed sign-ins for the same account and sour
 
 This is a suspicious pattern that merits investigation. The available dataset does not establish whether the sign-in was unauthorized, whether sensitive data was accessed or whether the account was compromised.
 
-Validation Evidence
-
-The Python prototype validation tests (T01–T06) passed using synthetic sign-in event data.
-
-Validation screenshot: "View Python validation results" (PATH/TO/SCREENSHOT.png)
-
-Validation Scope
-
-- Synthetic training data used.
-- Documentation-only IP addresses used.
-- Python prototype tests passed.
-- Live Microsoft Sentinel and KQL execution not yet performed.
-
-These results validate the Python prototype only; they do not represent testing in a live Sentinel environment.Validation Evidence
+Validation Evidence 
 
 The Python prototype validation tests (T01–T06) passed using synthetic sign-in event data.
 
