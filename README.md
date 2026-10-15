@@ -61,7 +61,8 @@ The investigation logic was validated using synthetic sign-in event data stored 
 
 The Python prototype validation tests (T01–T06) passed. These tests assess the expected behaviour of the investigation logic, including event handling and deduplication.
 
-Evidence: See the uploaded Python validation screenshot in this repository.
+Evidence:
+(evidence/python-validation-results.jpg)
 
 Validation Scope and Limitations
 
