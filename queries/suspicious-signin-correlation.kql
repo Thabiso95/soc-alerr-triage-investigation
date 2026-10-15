@@ -1,0 +1,36 @@
+
+let Lookback = 24h;
+let CorrelationWindow = 10m;
+let FailedSignIns =
+    SigninLogs
+    | where TimeGenerated >= ago(Lookback)
+    | where ResultType != "0"
+    | where isnotempty(IPAddress)
+    | project
+        UserPrincipalName,
+        IPAddress,
+        FailureTime = TimeGenerated,
+        FailureResult = ResultType;
+let SuccessfulSignIns =
+    SigninLogs
+    | where TimeGenerated >= ago(Lookback)
+    | where ResultType == "0"
+    | where isnotempty(IPAddress)
+    | project
+        UserPrincipalName,
+        IPAddress,
+        SuccessTime = TimeGenerated,
+        AppDisplayName;
+SuccessfulSignIns
+| join kind=inner FailedSignIns
+    on UserPrincipalName, IPAddress
+| where FailureTime < SuccessTime
+| where FailureTime >= SuccessTime - CorrelationWindow
+| summarize
+    FailedAttempts = count(),
+    FirstFailure = min(FailureTime),
+    LastFailure = max(FailureTime),
+    Applications = make_set(AppDisplayName)
+    by UserPrincipalName, IPAddress, SuccessTime
+| where FailedAttempts >= 3
+| order by SuccessTime desc
