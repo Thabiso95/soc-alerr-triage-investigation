@@ -1,55 +1,63 @@
-Investigation Logic — Validation Plan
+Investigation Logic — Validation Results
 
 Purpose
 
-This document defines repeatable checks for the synthetic sign-in investigation in case SOC-2026-002.
+This document records repeatable tests of the synthetic sign-in investigation logic for case SOC-2026-002.
 
-The tests evaluate the expected behaviour of the investigation logic. Results must be recorded only after the corresponding test has actually been performed.
+The tests evaluate the Python prototype's ability to correlate failed and successful sign-in events and handle duplicate records. They do not constitute validation of the KQL queries in a live Microsoft Sentinel workspace.
 
 Test Environment
 
 - Dataset: "evidence/signin-events.csv"
+- Test dataset: "test-results/test-signin-events.csv"
 - Dataset type: Synthetic training data
-- Expected source: Documentation-only IP addresses
+- Source IP addresses: Documentation-only IP addresses
+- Python prototype: Executed in Google Colab
 - Live Microsoft Sentinel execution: Not performed
-- Automated test execution: Pending
+- KQL syntax and schema validation: Pending
 
-Test Cases
+Test Cases and Results
 
-Test ID| Scenario| Expected Result
-T01| Five failed sign-ins followed by success from the same IP and account within 10 minutes| Correlation should identify the suspicious sequence
-T02| Fewer than three failed sign-ins followed by success| Should not meet the intended three-failure investigation threshold
-T03| Five failed sign-ins without a subsequent success| The failed-sign-in correlation query should not return a failure-to-success sequence
-T04| Failed sign-ins from one IP followed by success from a different IP| The same-IP correlation should not match the events
-T05| Successful sign-in with no preceding failures| Should not match the failure-to-success correlation
-T06| Repeated or duplicate event records| Results should be checked for inflated counts or duplicate findings
+Test ID| Scenario| Expected Result| Observed Python Result| Status
+T01| Five failed sign-ins followed by success from the same account and IP within 10 minutes| Detect the suspicious sequence| Alert generated before and after deduplication| PASS
+T02| Fewer than three failed sign-ins followed by success| No alert at the three-failure threshold| No alert generated| PASS
+T03| Five failed sign-ins without a subsequent success| No failure-to-success correlation alert| No alert generated| PASS
+T04| Failed sign-ins from one IP followed by success from a different IP| No same-IP correlation alert| No alert generated| PASS
+T05| Successful sign-in without preceding failures| No correlation alert| No alert generated| PASS
+T06| Three identical failure records followed by success| Detect the raw duplicate-driven count, then suppress the false threshold result after deduplication| Alert generated before deduplication; no alert after deduplication| PASS
 
-Validation Procedure
+Validation Method
 
-1. Review the synthetic dataset and confirm the timestamps, account names, source IP addresses and authentication outcomes.
-2. Check each test case against the intended correlation rules.
-3. Record the observed result and whether it matches the expected result.
-4. Investigate mismatches before changing the query or test expectation.
-5. Separately validate the KQL syntax and table schema in a suitable Microsoft Sentinel workspace before operational use.
+The Python prototype was executed against six synthetic test scenarios. The results were evaluated against the expected behaviour of the investigation logic.
 
-Results Register
+The prototype compares failed and successful events for the same account and source IP within the configured correlation window. It applies a minimum threshold of three failed events and supports a deduplication mode for evaluating repeated records.
 
-Test ID| Observed Result| Status| Notes
-T01| Pending| Not run| Same-account, same-IP failure-to-success sequence
-T02| Pending| Not run| Below-threshold scenario
-T03| Pending| Not run| No subsequent success
-T04| Pending| Not run| Different source IP
-T05| Pending| Not run| No preceding failures
-T06| Pending| Not run| Duplicate-event handling
+Findings
+
+1. Failure-to-success correlation: T01 demonstrated the intended suspicious sequence and generated an alert.
+2. Threshold handling: T02 did not generate an alert because it contained fewer than three failed events.
+3. Sequence requirements: T03 and T05 did not generate alerts because the required failure-to-success sequence was absent.
+4. Source IP matching: T04 did not generate an alert because the successful sign-in used a different source IP.
+5. Duplicate-event handling: T06 demonstrated that duplicate records can inflate raw event counts. Deduplication prevented the repeated records from satisfying the threshold on their own.
+
+Limitations
+
+- The events are synthetic and do not represent a real organisation or tenant.
+- The tests validate the Python prototype only.
+- The KQL queries have not been executed or validated in a live Microsoft Sentinel workspace.
+- Sentinel table schemas, field availability, query syntax, time-window behaviour and production performance remain unverified.
+- These results do not establish that the Python prototype and KQL queries produce identical results in all circumstances.
 
 Acceptance Criteria
 
-The investigation logic should identify the intended sequence without incorrectly correlating different users or source IP addresses. Duplicate records and join behaviour must be evaluated to understand their effect on counts.
+The six Python scenarios produced the expected results according to the test logic, including the duplicate-event scenario.
 
-A passing synthetic test does not establish that a KQL query executes successfully or performs accurately in a live Sentinel environment.
+This outcome is evidence of successful synthetic testing of the Python prototype. It is not evidence of live Sentinel validation, and it does not establish that the KQL queries are operationally ready.
 
 Current Status
 
-Status: Validation plan documented; test execution pending.
+Python prototype: 6 of 6 synthetic test scenarios passed.
 
-No test is marked as passed until it has been performed and its result recorded.
+KQL validation in Microsoft Sentinel: Pending.
+
+Overall project status: Synthetic Python validation completed; live KQL validation remains outstanding.
