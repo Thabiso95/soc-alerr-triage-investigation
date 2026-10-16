@@ -66,8 +66,8 @@ Validation Scope
 - Dataset: Synthetic training data ("evidence/signin-events.csv").
 - IP addresses: Documentation-only addresses.
 - Python prototype tests: Passed.
-- Live Microsoft Sentinel execution: Not performed.
-- Live KQL query validation: Not performed.
+- Live Microsoft Sentinel execution: Not yet performed.
+- Live KQL query validation: Not yet performed.
 
 The results demonstrate the expected behaviour of the Python prototype within the test environment. They do not constitute validation against a live Microsoft Sentinel workspace.
 
